@@ -1,34 +1,31 @@
-pragma solidity ^0.4.24;
-
-import "./ConvertLib.sol";
-
-// This is just a simple example of a coin-like contract.
-// It is not standards compatible and cannot be expected to talk to other
-// coin/token contracts. If you want to create a standards-compliant
-// token, see: https://github.com/ConsenSys/Tokens. Cheers!
+pragma solidity ^0.4.18;
 
 contract MetaCoin {
-	mapping (address => uint) balances;
 
-	event Transfer(address indexed _from, address indexed _to, uint256 _value);
-
-	constructor() public {
-		balances[tx.origin] = 10000;
+	string public name = 'HelloCoin'; 
+	//currency name. Please feel free to change it
+	string public symbol = 'hc'; 
+	//choose a currency symbol. Please feel free to change it
+	mapping (address => uint) balances; 
+	//a key-value pair to store addresses and their account balances
+	event Transfer(address _from, address _to, uint256 _value); 
+	// declaration of an event. Event will not do anything but add a record to the log
+	constructor() public { 
+	//when the contract is created, the constructor will be called automatically
+	balances[msg.sender] = 10000; 
+	//set the balances of creator account to be 10000. Please feel free to change it to any number you want.
 	}
-
-	function sendCoin(address receiver, uint amount) public returns(bool sufficient) {
-		if (balances[msg.sender] < amount) return false;
-		balances[msg.sender] -= amount;
-		balances[receiver] += amount;
-		emit Transfer(msg.sender, receiver, amount);
+    function sendCoin(address _receiver, uint _amount) public returns(bool sufficient) {
+		if (balances[msg.sender] < _amount) return false;  
+		// validate transfer
+		balances[msg.sender] -= _amount;
+		balances[_receiver] += _amount;
+		emit Transfer(msg.sender, _receiver, _amount); 
+		// complete coin transfer and call event to record the log
 		return true;
 	}
-
-	function getBalanceInEth(address addr) public view returns(uint){
-		return ConvertLib.convert(getBalance(addr),2);
-	}
-
-	function getBalance(address addr) public view returns(uint) {
-		return balances[addr];
+	function getBalance(address _addr) public view returns(uint) { 
+	//balance check
+	return balances[_addr];
 	}
 }
